@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase'
 export const useAuthStore = defineStore('auth', () => {
   const user = ref(null)
   const loading = ref(true)
+  const userPlan = ref('Free')
 
   // Initialize — check existing session on app load
   const init = async () => {
@@ -47,5 +48,9 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null
   }
 
-  return { user, loading, init, login, register, logout }
+  const updatePlan = (newPlan) => {
+    userPlan.value = newPlan
+  }
+
+  return { user, loading, userPlan, init, login, register, logout, updatePlan }
 })
