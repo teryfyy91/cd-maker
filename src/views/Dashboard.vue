@@ -2,8 +2,11 @@
 import { useRouter } from 'vue-router'
 import { Sparkles, FileText, LayoutTemplate, Settings, LogOut, Menu, Zap, Check, Plus, Search, Download, Share2, MoreVertical, Trash2, Clock, Eye } from 'lucide-vue-next'
 import CVGenerator from '../components/CVGenerator.vue'
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useAuthStore } from '../stores/authStore'
+import { useCvStore } from '../stores/cvStore'
+
+const cvStore = useCvStore()
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -64,29 +67,7 @@ const plans = [
 
 const searchQuery = ref('')
 
-const mockCvs = ref([
-  {
-    id: 1,
-    title: 'Frontend Developer Resume',
-    lastModified: '2 hours ago',
-    status: 'Ready',
-    template: 'Modern Professional'
-  },
-  {
-    id: 2,
-    title: 'UI/UX Designer Portfolio',
-    lastModified: 'Yesterday',
-    status: 'Draft',
-    template: 'Creative Minimal'
-  },
-  {
-    id: 3,
-    title: 'Project Manager CV',
-    lastModified: '3 days ago',
-    status: 'Optimized',
-    template: 'Executive'
-  }
-])
+const mockCvs = ref([])
 
 const selectedCv = ref(null)
 
@@ -94,6 +75,19 @@ const openCv = (cv) => {
   selectedCv.value = cv
   currentTab.value = 'cv-builder'
 }
+
+// Sync CV with current user info
+onMounted(() => {
+  if (authStore.user) {
+    cvStore.syncWithUser(authStore.user)
+  }
+})
+
+watch(() => authStore.user, (newUser) => {
+  if (newUser) {
+    cvStore.syncWithUser(newUser)
+  }
+}, { immediate: true })
 </script>
 
 <template>

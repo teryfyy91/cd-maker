@@ -6,11 +6,11 @@ export const useCvStore = defineStore('cv', () => {
   const isGenerating = ref(false)
   const currentCV = ref({
     personalInfo: {
-      fullName: 'John Doe',
-      email: 'john@example.com',
-      phone: '+1 234 567 890',
-      location: 'New York, US',
-      linkedin: 'linkedin.com/in/johndoe'
+      fullName: '',
+      email: '',
+      phone: '',
+      location: '',
+      linkedin: ''
     },
     summary: 'A passionate developer looking for new opportunities...',
     skills: ['JavaScript', 'Vue.js', 'Tailwind CSS'],
@@ -111,11 +111,21 @@ export const useCvStore = defineStore('cv', () => {
     }
   }
 
+  const syncWithUser = (user) => {
+    if (!user) return
+    currentCV.value.personalInfo.fullName = user.user_metadata?.full_name || user.email.split('@')[0]
+    currentCV.value.personalInfo.email = user.email
+    // phone and location can stay empty for user to fill, or we can use default mock placeholders if they are empty
+    if (!currentCV.value.personalInfo.phone) currentCV.value.personalInfo.phone = '+998 90 123 45 67'
+    if (!currentCV.value.personalInfo.location) currentCV.value.personalInfo.location = 'Tashkent, Uzbekistan'
+  }
+
   return {
     currentJobDescription,
     isGenerating,
     currentCV,
     selectedTemplate,
-    generateCV
+    generateCV,
+    syncWithUser
   }
 })

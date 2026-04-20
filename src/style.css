@@ -1,3 +1,6 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
 /* Custom Global Styles - Inter font applied via index.html CDN */
 
 body {
